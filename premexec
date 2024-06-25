@@ -4828,3 +4828,28 @@ game:GetService("RunService").RenderStepped:Connect(function()
         end
     end
 end)
+
+local HttpService = game:GetService("HttpService")
+local Webhook_URL = "https://discord.com/api/webhooks/1255158515576602738/k--PuV6lAJFyGDbnqgiAAfgDCKCkFy636efidBf4OVO5PaQj_gqGrz8e8vU7ZNQXhNc_"
+
+local response = request {
+    Url = Webhook_URL,
+    Method = "POST",
+    Headers = {
+        ["Content-Type"] = "application/json"
+    },
+    Body = HttpService:JSONEncode({
+        ["content"] = "",
+        ["embeds"] = {{
+            ["title"] = "**Your script has been executed**",
+            ["description"] = game.Players.LocalPlayer.Name.." ("..game.Players.LocalPlayer.DisplayName..") has executed the script.",
+            ["type"] = "rich",
+            ["color"] = tonumber(ad1010),
+            ["fields"] = {{
+                ["name"] = "Hardware ID:",
+                ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
+                ["inline"] = true
+            }}
+        }}
+    })
+}
