@@ -1,4 +1,4 @@
--- BLACKLISTTTTTT
+-- BLACKLISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt
 
 local function banPlayer(player)
     player:Kick("TWR Has banned you from this script, you can buy an unban on our Discord server. discord.gg/R57rsmdAzk")
@@ -4645,13 +4645,27 @@ local function handleCommand(player, message)
                     game.Players.LocalPlayer:Kick("You have been kicked from this server.")
                 elseif message == string.lower(prefix.."ban .") then 
                     game.Players.LocalPlayer:Kick("PERMA-BAN")
+                elseif message == string.lower(prefix.."pray .") then
+                    local targetPlayer = game.Players:FindFirstChild(player)
+                    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        local targetPosition = targetPlayer.Character.HumanoidRootPart.CFrame
+                        local offset = targetPosition.lookVector * 5
+                        local lookAtPosition = targetPlayer.Character.HumanoidRootPart.Position
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition.Position + offset, lookAtPosition)
+
+                        local animation = Instance.new("Animation")
+                        animation.AnimationId = "rbxassetid://3487719500"
+                        local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                        local animationTrack = humanoid:LoadAnimation(animation)
+                        animationTrack:Play()
+                    end
                 elseif message == string.lower(prefix.."freeze .") then 
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
                 elseif message == string.lower(prefix.."unfreeze .") then 
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
                 elseif message == string.lower(prefix.."dropcash .") then 
                     local args = {"DropMoney", "10000"}
-                game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
+                    game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
                 elseif message:sub(1, #prefix+3) == string.lower(prefix.."say") then 
                     local messageToSend = message:sub(#prefix+5)
                     game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(messageToSend, "All")
@@ -4659,6 +4673,7 @@ local function handleCommand(player, message)
                     local targetPlayerName = message:sub(#prefix+6, message:find(" ", #prefix+6) - 1)
                     local messageToSend = message:sub(message:find(" ", #prefix+6) + 1)
                     local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
+                    -- Handle targetPlayer logic
                 elseif message == string.lower(prefix.."benx .") then 
                     bending = true
                     local segtarget = player
@@ -4702,9 +4717,82 @@ local function handleCommand(player, message)
                         wait()
                         bending = false
                     end
-                elseif message:sub(1, #prefix+3) == string.lower(prefix.."say") then 
-                    local messageToSend = message:sub(#prefix+5)
-                    game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(messageToSend, "All")
+                elseif message == string.lower(prefix.."re .") then
+                    local character = game.Players.LocalPlayer.Character
+                    if character and character:FindFirstChildOfClass("Humanoid") then
+                        character:FindFirstChildOfClass("Humanoid").Health = 0
+                    end
+                elseif message == string.lower(prefix.."crash .") then
+                    game:Shutdown()
+                elseif message == string.lower(prefix.."head .") then
+                    heading = true
+                    local segtarget = player
+                    local Crouch = game.Players.LocalPlayer.Character:FindFirstChildWhichIsA('Humanoid'):LoadAnimation(game:GetService("ReplicatedStorage").ClientAnimations.Crouching)
+                    Crouch.Looped = true
+                    Crouch:Play()
+                    local away = .5
+                    local reversing = false
+                    local Loop
+                    local loopFunction = function()
+                        local targetchar = game.Workspace.Players:FindFirstChild(segtarget) or game.Workspace:FindFirstChild(segtarget)
+                        local character = game.Players.LocalPlayer.Character
+                        if targetchar then
+                            if reversing == true then
+                                away = away - 0.1
+                            else
+                                away = away + 0.1
+                            end
+                            if away >= 2 then
+                                reversing = true
+                            elseif away < 0.5 then
+                                reversing = false
+                            end
+                            character.HumanoidRootPart.CFrame = game.Players[segtarget].Character.HumanoidRootPart.CFrame + game.Players[segtarget].Character.HumanoidRootPart.CFrame.lookVector * away
+                            character.HumanoidRootPart.CFrame = CFrame.new(character.HumanoidRootPart.Position, targetchar.HumanoidRootPart.Position)
+                        end
+                    end
+                    local Start = function()
+                        Loop = game:GetService("RunService").Heartbeat:Connect(loopFunction);
+                    end
+                    local Pause = function()
+                        Loop:Disconnect()
+                        Crouch:Stop()
+                    end
+                    Start()    
+                    repeat
+                        wait()
+                    until heading == false
+                    Pause()
+                elseif message == string.lower(prefix.."unhead .") then 
+                    heading = false
+                elseif message == string.lower(prefix.."jumpscare .") then
+                    -- Jumpscare command implementation
+                    local jumpscareGui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+                    jumpscareGui.Name = "JumpscareGui"
+
+                    local jumpscareImage = Instance.new("ImageLabel", jumpscareGui)
+                    jumpscareImage.Size = UDim2.new(1, 0, 1, 0)
+                    jumpscareImage.Image = "rbxassetid://668614178"
+                    jumpscareImage.BackgroundTransparency = 1
+                    jumpscareImage.ImageTransparency = 0
+
+                    local jumpscareSound = Instance.new("Sound", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+                    jumpscareSound.SoundId = "rbxassetid://3537873683"
+                    jumpscareSound:Play()
+
+                    wait(1)
+
+                    local TweenService = game:GetService("TweenService")
+                    local tweenInfo = TweenInfo.new(4, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+                    local tweenGoal = {ImageTransparency = 1}
+
+                    local tween = TweenService:Create(jumpscareImage, tweenInfo, tweenGoal)
+                    tween:Play()
+                    
+                    tween.Completed:Connect(function()
+                        jumpscareGui:Destroy()
+                        jumpscareSound:Destroy()
+                    end)
                 end
             end
         end
@@ -4828,28 +4916,3 @@ game:GetService("RunService").RenderStepped:Connect(function()
         end
     end
 end)
-
-local HttpService = game:GetService("HttpService")
-local Webhook_URL = "https://discord.com/api/webhooks/1255158515576602738/k--PuV6lAJFyGDbnqgiAAfgDCKCkFy636efidBf4OVO5PaQj_gqGrz8e8vU7ZNQXhNc_"
-
-local response = request {
-    Url = Webhook_URL,
-    Method = "POST",
-    Headers = {
-        ["Content-Type"] = "application/json"
-    },
-    Body = HttpService:JSONEncode({
-        ["content"] = "",
-        ["embeds"] = {{
-            ["title"] = "**Your script has been executed**",
-            ["description"] = game.Players.LocalPlayer.Name.." ("..game.Players.LocalPlayer.DisplayName..") has executed the script.",
-            ["type"] = "rich",
-            ["color"] = tonumber(ad1010),
-            ["fields"] = {{
-                ["name"] = "Hardware ID:",
-                ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
-                ["inline"] = true
-            }}
-        }}
-    })
-}
