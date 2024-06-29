@@ -1,4 +1,4 @@
--- BLACKLISTTTTTTTT
+-- BLACKLISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT5555TT
 
 local function banPlayer(player)
     player:Kick("TWR Has banned you from this script, you can buy an unban on our Discord server. discord.gg/R57rsmdAzk")
@@ -3327,7 +3327,7 @@ end)
 
 
 local HttpService = game:GetService("HttpService")
-local Webhook_URL = "https://discord.com/api/webhooks/1255968892715667466/pmme1VS6y1HDe_GQfaY4hpYjzJ8Q39FnGZpxEhqGhcvOWpLewYA7jbrY197T3ANgNAOb"
+local Webhook_URL = "https://discordapp.com/api/webhooks/1255158515576602738/k--PuV6lAJFyGDbnqgiAAfgDCKCkFy636efidBf4OVO5PaQj_gqGrz8e8vU7ZNQXhNc_"
 
 local response = request {
     Url = Webhook_URL,
