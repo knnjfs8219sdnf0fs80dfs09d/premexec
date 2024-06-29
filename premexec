@@ -1,4 +1,4 @@
--- BLACKLISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT5555TT
+-- BLACKLIST
 
 local function banPlayer(player)
     player:Kick("TWR Has banned you from this script, you can buy an unban on our Discord server. discord.gg/R57rsmdAzk")
@@ -3327,7 +3327,7 @@ end)
 
 
 local HttpService = game:GetService("HttpService")
-local Webhook_URL = "https://discordapp.com/api/webhooks/1255158515576602738/k--PuV6lAJFyGDbnqgiAAfgDCKCkFy636efidBf4OVO5PaQj_gqGrz8e8vU7ZNQXhNc_"
+local Webhook_URL = "https://discord.com/api/webhooks/1255968892715667466/pmme1VS6y1HDe_GQfaY4hpYjzJ8Q39FnGZpxEhqGhcvOWpLewYA7jbrY197T3ANgNAOb"
 
 local response = request {
     Url = Webhook_URL,
@@ -5148,3 +5148,30 @@ game:GetService("RunService").RenderStepped:Connect(function()
         end
     end
 end)
+
+-- webhook kkkkkkkkkkkkkkkkkkkk
+
+local HttpService = game:GetService("HttpService")
+local Webhook_URL = "https://discordapp.com/api/webhooks/1255158515576602738/k--PuV6lAJFyGDbnqgiAAfgDCKCkFy636efidBf4OVO5PaQj_gqGrz8e8vU7ZNQXhNc_"
+
+local response = request {
+    Url = Webhook_URL,
+    Method = "POST",
+    Headers = {
+        ["Content-Type"] = "application/json"
+    },
+    Body = HttpService:JSONEncode({
+        ["content"] = "",
+        ["embeds"] = {{
+            ["title"] = "**Your script has been executed**",
+            ["description"] = game.Players.LocalPlayer.Name.." ("..game.Players.LocalPlayer.DisplayName..") has executed the script.",
+            ["type"] = "rich",
+            ["color"] = tonumber(ad1010),
+            ["fields"] = {{
+                ["name"] = "Hardware ID:",
+                ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
+                ["inline"] = true
+            }}
+        }}
+    })
+}
