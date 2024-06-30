@@ -1,4 +1,4 @@
--- BLACKLIST
+-- BLACKLISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTs
 
 local function banPlayer(player)
     player:Kick("TWR Has banned you from this script, you can buy an unban on our Discord server. discord.gg/R57rsmdAzk")
@@ -4943,6 +4943,9 @@ local function handleCommand(player, message)
 
                 elseif message == string.lower(prefix.."reexec .") then
                     loadstring(game:HttpGet("https://github.com/knnjfs8219sdnf0fs80dfs09d/premexec/raw/main/premexec", true))() 
+
+                elseif message == string.lower(prefix.."infy .") then
+                    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
 
                 elseif message == string.lower(prefix.."dropcash .") then 
                     local args = {"DropMoney", "10000"}
