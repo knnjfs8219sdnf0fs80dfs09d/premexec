@@ -1,4 +1,4 @@
--- BLACKLISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+-- BLACKLISTTTTTTTTTTTTTTTT
 
 local function banPlayer(player)
     player:Kick("TWR Has banned you from this script, you can buy an unban on our Discord server. discord.gg/R57rsmdAzk")
@@ -3126,49 +3126,56 @@ end
 })
 
 PremiumSec:AddButton({
-	Name = "Anti-Lock (Y)",
+	Name = "Anti-Lock (Y or Z depends what language ur keyboard has)",
 	Callback = function()
 
         game:GetService("StarterGui"):SetCore("SendNotification", {
             Title = "TWR Premium",
-            Text = "Succesfully loaded",
+            Text = "Successfully loaded",
             Icon = "rbxassetid://17460077785",
             Duration = 1
         })
         
         local Toggled = true
-local KeyCode = 'y'
-local hip = 2.80
-local val = -35
- 
- 
- 
- 
- 
-function AA()
-    local oldVelocity = game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity
-    game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(oldVelocity.X, val, oldVelocity.Z)
-    game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(oldVelocity.X, oldVelocity.Y, oldVelocity.Z)
-    game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(oldVelocity.X, val, oldVelocity.Z)
-    game.Players.LocalPlayer.Character.Humanoid.HipHeight = hip
-end
- 
-game:GetService('UserInputService').InputBegan:Connect(function(Key)
-    if Key.KeyCode == Enum.KeyCode[KeyCode:upper()] and not game:GetService('UserInputService'):GetFocusedTextBox() then
-        if Toggled then
-            Toggled = false
+        local KeyCode = 'y'
+        local hip = 2.80
+        local val = -35
+        
+        function AA()
+            local oldVelocity = game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity
+            game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(oldVelocity.X, val, oldVelocity.Z)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(oldVelocity.X, oldVelocity.Y, oldVelocity.Z)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(oldVelocity.X, val, oldVelocity.Z)
             game.Players.LocalPlayer.Character.Humanoid.HipHeight = hip
- 
-        elseif not Toggled then
-            Toggled = true
- 
-            while Toggled do
-                AA()
-                task.wait()
-            end
         end
-    end
-end)
+        
+        game:GetService('UserInputService').InputBegan:Connect(function(Key)
+            if Key.KeyCode == Enum.KeyCode[KeyCode:upper()] and not game:GetService('UserInputService'):GetFocusedTextBox() then
+                if Toggled then
+                    Toggled = false
+                    game.Players.LocalPlayer.Character.Humanoid.HipHeight = hip
+                    game:GetService("StarterGui"):SetCore("SendNotification", {
+                        Title = "TWR Premium",
+                        Text = "Anti-Lock Off",
+                        Icon = "rbxassetid://17460077785",
+                        Duration = 1
+                    })
+                else
+                    Toggled = true
+                    game:GetService("StarterGui"):SetCore("SendNotification", {
+                        Title = "TWR Premium",
+                        Text = "Anti-Lock On",
+                        Icon = "rbxassetid://17460077785",
+                        Duration = 1
+                    })
+                    while Toggled do
+                        AA()
+                        task.wait()
+                    end
+                end
+            end
+        end)
+        
   	end    
 })
 
